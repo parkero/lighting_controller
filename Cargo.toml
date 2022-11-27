@@ -1,0 +1,11 @@
+[package]
+name = "lighting_controller"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+arrayvec = { version = "0.7", default-features = false }
+embedded-time = "0.12"
+rgb = "0.8"
+smart-leds = "0.3"
+smart-leds-trait = "0.2"
