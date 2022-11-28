@@ -10,7 +10,7 @@ fn main() {
     let frame_rate = 60.Hz();
     let mut color_buffer: [RGB8; 16] = [BLACK; 16];
     let ls = LogicalStrip::new(&mut color_buffer);
-    let translation_array: [usize; 16] = default_translation_array(16);
+    let translation_array: [usize; 16] = default_translation_array(0);
     let animation =
         &mut Animation::new(default_animations::ANI_TEST, translation_array, frame_rate);
     let animation_array: [&mut dyn Animatable; 1] = [animation];

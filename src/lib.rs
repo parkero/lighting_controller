@@ -11,11 +11,11 @@ use embedded_time::rate::Hertz;
 use rgb::RGB8;
 
 pub struct LogicalStrip<'a> {
-    color_buffer: &'a mut [RGB8],
+    pub color_buffer: &'a mut [RGB8],
 }
 
 pub struct LightingController<'a, const N_ANI: usize> {
-    logical_strip: LogicalStrip<'a>,
+    pub logical_strip: LogicalStrip<'a>,
     animations: [&'a mut dyn Animatable<'a>; N_ANI],
     frame_rate: Hertz,
 }
