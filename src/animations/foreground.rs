@@ -1,13 +1,14 @@
 use crate::{
     animations::{Direction, MAX_OFFSET},
-    colors,
-    colors::{Rainbow, RGB8},
+    colors::Rainbow,
     utility::{
         convert_ns_to_frames, FadeRainbow, MarchingRainbow, MarchingRainbowMut, Progression,
         StatefulRainbow,
     },
 };
 use embedded_time::rate::Hertz;
+use rgb::RGB8;
+use smart_leds::colors::BLACK;
 
 type FgUpdater = fn(&mut Foreground, &mut [RGB8]);
 
@@ -89,7 +90,7 @@ fn vu_meter(fg: &mut Foreground, segment: &mut [RGB8]) {
     let led_count = segment.len();
     let last_on_led = fg.offset as usize / led_count;
     for led in &mut segment[last_on_led..] {
-        *led = colors::C_OFF;
+        *led = BLACK;
     }
 }
 

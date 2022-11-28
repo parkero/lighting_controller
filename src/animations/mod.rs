@@ -2,8 +2,8 @@ pub mod background;
 pub mod foreground;
 pub mod trigger;
 
-use crate::colors::RGB8;
 use embedded_time::rate::Hertz;
+use rgb::RGB8;
 
 /// Adjust MAX_NUM_* consts depending on RAM requirements:
 pub(crate) const MAX_NUM_ACTIVE_TRIGGERS: usize = 10;

@@ -18,7 +18,7 @@ pub const DEFAULT_NUMBER_OF_PIXELS_PER_MARQUEE_PIP: usize = 1;
 /// This background parameter struct can be used to turn off all background effects
 pub const BG_OFF: background::Parameters = background::Parameters {
     mode: background::Mode::NoBackground,
-    rainbow: c::R_OFF,
+    rainbow: c::R_BLACK,
     direction: Direction::Stopped,
     is_rainbow_forward: true,
     duration_ns: 0,
@@ -28,7 +28,7 @@ pub const BG_OFF: background::Parameters = background::Parameters {
 /// This foreground parameter struct can be used to turn off all foreground effects
 pub const FG_OFF: foreground::Parameters = foreground::Parameters {
     mode: foreground::Mode::NoForeground,
-    rainbow: c::R_OFF,
+    rainbow: c::R_BLACK,
     direction: Direction::Stopped,
     is_rainbow_forward: true,
     duration_ns: 0,
@@ -39,7 +39,7 @@ pub const FG_OFF: foreground::Parameters = foreground::Parameters {
 
 /// This global trigger parameter struct can be used to turn off all trigger effects.
 pub const TRIGGER_OFF: trigger::GlobalParameters = trigger::GlobalParameters {
-    rainbow: c::R_OFF,
+    rainbow: c::R_BLACK,
     is_rainbow_forward: true,
     duration_ns: 0,
 };

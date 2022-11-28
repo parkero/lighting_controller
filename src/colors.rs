@@ -1,140 +1,91 @@
 //! This library has definitions for various color types and assorted utilities for manipulating and
-//! working with the various color types. Colors are intended to be compatible with the
+//! working with the RGB8 color type. Colors are intended to be compatible with the
 //! [smart-leds](https://github.com/smart-leds-rs/smart-leds) crate, which in turn is compatible
 //! with the [rgb](https://github.com/kornelski/rust-rgb) crate.
 
-const IS_GAMMA_CORRECTION_ENABLED: bool = true;
+use crate::utility::Progression;
+use rgb::RGB8;
+use smart_leds::colors::*;
 
-#[derive(Default, Copy, Clone, Debug)]
-pub struct RGB8 {
-    pub r: u8,
-    pub g: u8,
-    pub b: u8,
+pub fn color_lerp(
+    factor: i32,
+    in_min: i32,
+    in_max: i32,
+    start_color: RGB8,
+    end_color: RGB8,
+) -> RGB8 {
+    let lerp = |start: u8, end: u8| {
+        let start = start as i32;
+        let end = end as i32;
+        ((factor - in_min) * (end - start) / (in_max - in_min) + start) as u8
+    };
+    let mut mid_color = <RGB8>::new(0, 0, 0);
+    mid_color.r = lerp(start_color.r, end_color.r);
+    mid_color.g = lerp(start_color.g, end_color.g);
+    mid_color.b = lerp(start_color.b, end_color.b);
+    mid_color
 }
 
-impl RGB8 {
-    // new color object takes rgb color values:
-    pub fn new(r: u8, g: u8, b: u8) -> Self {
-        let r = GAMMA8[r as usize];
-        let g = GAMMA8[g as usize];
-        let b = GAMMA8[b as usize];
-        RGB8 { r, g, b }
+pub trait ManipulatableColor<RgbType> {
+    fn lerp_with(&self, to_color: RgbType, factor: Progression) -> RgbType;
+    fn set_color(&mut self, c: RgbType);
+}
+
+impl ManipulatableColor<RGB8> for RGB8 {
+    fn lerp_with(&self, to_color: RGB8, factor: Progression) -> RGB8 {
+        color_lerp(
+            factor.get_current() as i32,
+            0,
+            factor.total as i32,
+            *self,
+            to_color,
+        )
     }
 
-    // change RGB color values for mutable color
-    pub fn set_rgb(&mut self, r: u8, g: u8, b: u8) {
-        if IS_GAMMA_CORRECTION_ENABLED {
-            self.r = GAMMA8[r as usize];
-            self.g = GAMMA8[g as usize];
-            self.b = GAMMA8[b as usize];
-        } else {
-            self.r = r;
-            self.g = g;
-            self.b = b;
-        }
-    }
-
-    // change RGB color values for mutable color
-    pub fn set_color(&mut self, color: RGB8) {
-        self.set_rgb(color.r, color.g, color.b);
-    }
-
-    // t=This maps a color to a fractional mid-color based on the position of the factor
-    // between the in_min and in_max values. It will automatically truncate any values
-    // below 0 or larger than 255 when it is cast back to a u8 at the end of the calculation.
-    pub fn color_lerp(
-        factor: i32,
-        in_min: i32,
-        in_max: i32,
-        start_color: RGB8,
-        end_color: RGB8,
-    ) -> RGB8 {
-        let lerp = |start: u8, end: u8| {
-            let start = start as i32;
-            let end = end as i32;
-            ((factor - in_min) * (end - start) / (in_max - in_min) + start) as u8
-        };
-        let mut mid_color = C_OFF;
-
-        mid_color.r = lerp(start_color.r, end_color.r);
-        mid_color.g = lerp(start_color.g, end_color.g);
-        mid_color.b = lerp(start_color.b, end_color.b);
-
-        mid_color
+    fn set_color(&mut self, c: RGB8) {
+        self.r = c.r;
+        self.g = c.g;
+        self.b = c.b;
     }
 }
 
 // Generic colors:
-pub const C_RED: RGB8 = RGB8 { r: 255, g: 0, b: 0 };
-pub const C_ORANGE: RGB8 = RGB8 {
-    r: 255,
-    g: 127,
-    b: 0,
-};
-pub const C_YELLOW: RGB8 = RGB8 {
-    r: 255,
-    g: 255,
-    b: 0,
-};
-pub const C_YELLOW_GREEN: RGB8 = RGB8 {
-    r: 127,
-    g: 255,
-    b: 0,
-};
-pub const C_GREEN: RGB8 = RGB8 { r: 0, g: 255, b: 0 };
-pub const C_GREEN_BLUE: RGB8 = RGB8 {
-    r: 0,
-    g: 255,
-    b: 127,
-};
-pub const C_SKY_BLUE: RGB8 = RGB8 {
-    r: 0,
-    g: 255,
-    b: 255,
-};
-pub const C_DEEP_BLUE: RGB8 = RGB8 {
+pub const DEEP_BLUE: RGB8 = RGB8 {
     r: 0,
     g: 127,
     b: 255,
 };
-pub const C_BLUE: RGB8 = RGB8 { r: 0, g: 0, b: 255 };
-pub const C_BLUE_PURPLE: RGB8 = RGB8 {
+pub const BLUE_PURPLE: RGB8 = RGB8 {
     r: 127,
     g: 0,
     b: 255,
 };
-pub const C_PURPLE: RGB8 = RGB8 {
+pub const FUCHSIA: RGB8 = RGB8 {
     r: 255,
     g: 0,
     b: 255,
 };
-pub const C_DARK_PURPLE: RGB8 = RGB8 {
+pub const DARK_PURPLE: RGB8 = RGB8 {
     r: 255,
     g: 0,
     b: 127,
 };
-pub const C_WHITE: RGB8 = RGB8 {
-    r: 255,
-    g: 255,
-    b: 255,
-};
-pub const C_OFF: RGB8 = RGB8 { r: 0, g: 0, b: 0 };
-pub const C_T_3000K: RGB8 = RGB8 {
+pub const T_3000K: RGB8 = RGB8 {
     r: 255,
     g: 180,
     b: 107,
 };
-pub const C_T_3500K: RGB8 = RGB8 {
+pub const T_3500K: RGB8 = RGB8 {
     r: 255,
     g: 196,
     b: 137,
 };
-pub const C_T_4000K: RGB8 = RGB8 {
+pub const T_4000K: RGB8 = RGB8 {
     r: 255,
     g: 209,
     b: 163,
 };
-pub const C_T_5000K: RGB8 = RGB8 {
+pub const T_5000K: RGB8 = RGB8 {
     r: 255,
     g: 228,
     b: 206,
@@ -144,33 +95,33 @@ pub const C_T_5000K: RGB8 = RGB8 {
 // list of colors in order, which will be used by animations as a color rainbow.
 pub type Rainbow<'a> = &'a [RGB8];
 
-pub const R_OFF: Rainbow = &[C_OFF];
-pub const R_ON: Rainbow = &[C_WHITE];
-pub const R_RED: Rainbow = &[C_RED];
-pub const R_ORANGE: Rainbow = &[C_ORANGE];
-pub const R_YELLOW: Rainbow = &[C_YELLOW];
-pub const R_YELLOW_GREEN: Rainbow = &[C_YELLOW_GREEN];
-pub const R_GREEN: Rainbow = &[C_GREEN];
-pub const R_GREEN_BLUE: Rainbow = &[C_GREEN_BLUE];
-pub const R_SKY_BLUE: Rainbow = &[C_SKY_BLUE];
-pub const R_DEEP_BLUE: Rainbow = &[C_DEEP_BLUE];
-pub const R_BLUE: Rainbow = &[C_BLUE];
-pub const R_BLUE_PURPLE: Rainbow = &[C_BLUE_PURPLE];
-pub const R_PURPLE: Rainbow = &[C_PURPLE];
-pub const R_DARK_PURPLE: Rainbow = &[C_DARK_PURPLE];
-pub const R_ROYGBIV: Rainbow = &[C_RED, C_YELLOW, C_GREEN, C_BLUE];
-pub const R_RYB: Rainbow = &[C_RED, C_OFF, C_YELLOW, C_OFF, C_BLUE, C_OFF];
-pub const R_OGP: Rainbow = &[C_ORANGE, C_OFF, C_GREEN, C_OFF, C_PURPLE, C_OFF];
-pub const R_RGB: Rainbow = &[C_RED, C_OFF, C_GREEN, C_OFF, C_BLUE, C_OFF];
-pub const R_BY: Rainbow = &[C_BLUE, C_OFF, C_YELLOW, C_OFF];
-pub const R_RB: Rainbow = &[C_RED, C_OFF, C_SKY_BLUE, C_OFF];
-pub const R_OB: Rainbow = &[C_ORANGE, C_OFF, C_DEEP_BLUE, C_OFF];
-pub const R_BW: Rainbow = &[C_BLUE, C_OFF, C_WHITE, C_OFF];
-pub const R_RW: Rainbow = &[C_RED, C_OFF, C_WHITE, C_OFF];
-pub const R_GW: Rainbow = &[C_GREEN, C_OFF, C_WHITE, C_OFF];
+pub const R_BLACK: Rainbow = &[BLACK];
+pub const R_WHITE: Rainbow = &[WHITE];
+pub const R_RED: Rainbow = &[RED];
+pub const R_ORANGE: Rainbow = &[ORANGE];
+pub const R_YELLOW: Rainbow = &[YELLOW];
+pub const R_CHARTREUSE: Rainbow = &[CHARTREUSE];
+pub const R_LIME: Rainbow = &[LIME];
+pub const R_SPRING_GREEN: Rainbow = &[SPRING_GREEN];
+pub const R_CYAN: Rainbow = &[CYAN];
+pub const R_DEEP_BLUE: Rainbow = &[DEEP_BLUE];
+pub const R_BLUE: Rainbow = &[BLUE];
+pub const R_BLUE_PURPLE: Rainbow = &[BLUE_PURPLE];
+pub const R_FUCHSIA: Rainbow = &[FUCHSIA];
+pub const R_DARK_PURPLE: Rainbow = &[DARK_PURPLE];
+pub const R_ROYGBIV: Rainbow = &[RED, YELLOW, LIME, BLUE];
+pub const R_RYB: Rainbow = &[RED, BLACK, YELLOW, BLACK, BLUE, BLACK];
+pub const R_OGP: Rainbow = &[ORANGE, BLACK, LIME, BLACK, FUCHSIA, BLACK];
+pub const R_RGB: Rainbow = &[RED, BLACK, LIME, BLACK, BLUE, BLACK];
+pub const R_BY: Rainbow = &[BLUE, BLACK, YELLOW, BLACK];
+pub const R_RB: Rainbow = &[RED, BLACK, CYAN, BLACK];
+pub const R_OB: Rainbow = &[ORANGE, BLACK, DEEP_BLUE, BLACK];
+pub const R_BW: Rainbow = &[BLUE, BLACK, WHITE, BLACK];
+pub const R_RW: Rainbow = &[RED, BLACK, WHITE, BLACK];
+pub const R_GW: Rainbow = &[LIME, BLACK, WHITE, BLACK];
 
 pub const fn dark_pattern(base: RGB8) -> [RGB8; 6] {
-    let mut colors = [C_OFF; 6];
+    let mut colors = [BLACK; 6];
     let mut i = 0;
     while i < 3 {
         colors[i * 2] = RGB8 {
@@ -188,34 +139,34 @@ pub const fn dark_pattern(base: RGB8) -> [RGB8; 6] {
     colors
 }
 
-pub const R_DARK_RED_PATTERN: Rainbow = &dark_pattern(C_RED);
-pub const R_DARK_YELLOW_PATTERN: Rainbow = &dark_pattern(C_YELLOW);
-pub const R_DARK_GREEN_PATTERN: Rainbow = &dark_pattern(C_GREEN);
-pub const R_DARK_SKY_BLUE_PATTERN: Rainbow = &dark_pattern(C_SKY_BLUE);
-pub const R_DARK_BLUE_PATTERN: Rainbow = &dark_pattern(C_BLUE);
-pub const R_DARK_PURPLE_PATTERN: Rainbow = &dark_pattern(C_PURPLE);
-pub const R_WHITE_PATTERN: Rainbow = &dark_pattern(C_WHITE);
+pub const R_DARK_RED_PATTERN: Rainbow = &dark_pattern(RED);
+pub const R_DARK_YELLOW_PATTERN: Rainbow = &dark_pattern(YELLOW);
+pub const R_DARK_GREEN_PATTERN: Rainbow = &dark_pattern(LIME);
+pub const R_DARK_SKY_BLUE_PATTERN: Rainbow = &dark_pattern(CYAN);
+pub const R_DARK_BLUE_PATTERN: Rainbow = &dark_pattern(BLUE);
+pub const R_DARK_PURPLE_PATTERN: Rainbow = &dark_pattern(FUCHSIA);
+pub const R_WHITE_PATTERN: Rainbow = &dark_pattern(WHITE);
 pub const R_VU_METER: Rainbow = &[
-    C_GREEN, C_GREEN, C_GREEN, C_GREEN, C_GREEN, C_GREEN, C_GREEN, C_YELLOW, C_YELLOW, C_RED,
+    LIME, LIME, LIME, LIME, LIME, LIME, LIME, YELLOW, YELLOW, RED,
 ];
 
 pub const NUM_RAINBOWS: usize = 31;
 
 /// This is an array of the rainbow consts above that can be used to cycle through rainbows in animations.
 pub const RAINBOW_ARRAY: [&[RGB8]; NUM_RAINBOWS] = [
-    R_OFF,
-    R_ON,
+    R_BLACK,
+    R_WHITE,
     R_RED,
     R_ORANGE,
     R_YELLOW,
-    R_YELLOW_GREEN,
-    R_GREEN,
-    R_GREEN_BLUE,
-    R_SKY_BLUE,
+    R_CHARTREUSE,
+    R_LIME,
+    R_SPRING_GREEN,
+    R_CYAN,
     R_DEEP_BLUE,
     R_BLUE,
     R_BLUE_PURPLE,
-    R_PURPLE,
+    R_FUCHSIA,
     R_DARK_PURPLE,
     R_ROYGBIV,
     R_RYB,
@@ -235,22 +186,3 @@ pub const RAINBOW_ARRAY: [&[RGB8]; NUM_RAINBOWS] = [
     R_DARK_PURPLE_PATTERN,
     R_WHITE_PATTERN,
 ];
-
-/// A color correction table for LEDs to make them look like the color you expect:
-/// Shamelessly stolen from Adafruit's neopixel library somewhere a long time ago.
-pub static GAMMA8: [u8; 256] = [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5,
-    5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 13, 13, 13, 14,
-    14, 15, 15, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 24, 24, 25, 25, 26, 27,
-    27, 28, 29, 29, 30, 31, 32, 32, 33, 34, 35, 35, 36, 37, 38, 39, 39, 40, 41, 42, 43, 44, 45, 46,
-    47, 48, 49, 50, 50, 51, 52, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 72,
-    73, 74, 75, 77, 78, 79, 81, 82, 83, 85, 86, 87, 89, 90, 92, 93, 95, 96, 98, 99, 101, 102, 104,
-    105, 107, 109, 110, 112, 114, 115, 117, 119, 120, 122, 124, 126, 127, 129, 131, 133, 135, 137,
-    138, 140, 142, 144, 146, 148, 150, 152, 154, 156, 158, 160, 162, 164, 167, 169, 171, 173, 175,
-    177, 180, 182, 184, 186, 189, 191, 193, 196, 198, 200, 203, 205, 208, 210, 213, 215, 218, 220,
-    223, 225, 228, 231, 233, 236, 239, 241, 244, 247, 249, 252, 255,
-];
-
-/// This is the first color in the GAMMA8 array that is not completely turned off.
-pub const FIRST_NON_OFF_COLOR: usize = 28;

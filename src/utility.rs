@@ -1,11 +1,11 @@
-use core::ops::Index;
-
+use crate::colors::ManipulatableColor;
 use crate::{
     animations::{Direction, MAX_OFFSET},
-    colors::{Rainbow, RGB8},
+    colors::Rainbow,
 };
-
+use core::ops::Index;
 use embedded_time::rate::*;
+use rgb::RGB8;
 
 pub fn convert_ns_to_frames(nanos: u64, frame_rate: Hertz) -> usize {
     (nanos * frame_rate.integer() as u64 / 1_000_000_000_u64) as usize
@@ -283,17 +283,5 @@ impl Progression {
 
     pub fn reset(&mut self) {
         self.current = 0
-    }
-}
-
-impl RGB8 {
-    pub fn lerp_with(&self, to_color: RGB8, factor: Progression) -> RGB8 {
-        RGB8::color_lerp(
-            factor.get_current() as i32,
-            0,
-            factor.total as i32,
-            *self,
-            to_color,
-        )
     }
 }

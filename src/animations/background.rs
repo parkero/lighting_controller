@@ -1,10 +1,12 @@
 use crate::animations::{Direction, MAX_OFFSET};
-use crate::colors::{self, Rainbow, RGB8};
+use crate::colors::{color_lerp, Rainbow};
 use crate::utility::{
     self, convert_ns_to_frames, get_random_offset, FadeRainbow, MarchingRainbow,
     MarchingRainbowMut, Progression, StatefulRainbow,
 };
 use embedded_time::rate::Hertz;
+use rgb::RGB8;
+use smart_leds::colors::*;
 type BgUpdater = fn(&mut Background, &mut [RGB8]);
 
 /// Background Modes are rendered onto the animation LEDs first before any Foreground or Trigger
@@ -53,7 +55,7 @@ impl Mode {
 
 /// Sets all LEDs to off
 fn no_background(bg: &mut Background, segment: &mut [RGB8]) {
-    bg.fill_solid(colors::C_OFF, segment);
+    bg.fill_solid(BLACK, segment);
 }
 
 /// Sets all LEDs to the current rainbow color. Note that in this mode the color will only
@@ -196,7 +198,7 @@ impl<'a> Background<'a> {
             let end_color_index = (rainbow_bucket + 1) % rainbow_length;
             let end_color = rainbow[end_color_index];
 
-            let mid_color = colors::RGB8::color_lerp(
+            let mid_color = color_lerp(
                 factor as i32,
                 0,
                 distance_between_colors as i32,

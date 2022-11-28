@@ -6,10 +6,12 @@ pub mod default_animations;
 pub mod utility;
 
 use crate::animations::{Animatable, AnimationType};
+use crate::colors::ManipulatableColor;
 use embedded_time::rate::Hertz;
+use rgb::RGB8;
 
 pub struct LogicalStrip<'a> {
-    color_buffer: &'a mut [colors::RGB8],
+    color_buffer: &'a mut [RGB8],
 }
 
 pub struct LightingController<'a, const N_ANI: usize> {
@@ -19,21 +21,21 @@ pub struct LightingController<'a, const N_ANI: usize> {
 }
 
 impl<'a> LogicalStrip<'a> {
-    pub fn new(color_buffer: &'a mut [colors::RGB8]) -> Self {
+    pub fn new(color_buffer: &'a mut [RGB8]) -> Self {
         LogicalStrip { color_buffer }
     }
 
-    pub fn get_color_at_index(&self, index: usize) -> colors::RGB8 {
+    pub fn get_color_at_index(&self, index: usize) -> RGB8 {
         self.color_buffer[index]
     }
 
     // this sets the color value in the color array at index:
-    pub fn set_color_at_index(&mut self, index: usize, color: colors::RGB8) {
+    pub fn set_color_at_index(&mut self, index: usize, color: RGB8) {
         self.color_buffer[index].set_color(color);
     }
 
     // this fills the entire strip with a single color:
-    pub fn set_strip_to_solid_color(&mut self, color: colors::RGB8) {
+    pub fn set_strip_to_solid_color(&mut self, color: RGB8) {
         for c in &mut self.color_buffer.iter_mut() {
             c.set_color(color);
         }

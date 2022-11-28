@@ -1,12 +1,14 @@
 use embedded_time::rate::Extensions;
 use lc::animations::{Animatable, Animation};
 use lc::utility::default_translation_array;
-use lc::{colors, default_animations, LightingController, LogicalStrip};
+use lc::{default_animations, LightingController, LogicalStrip};
 use lighting_controller as lc;
+use rgb::RGB8;
+use smart_leds::colors::*;
 
 fn main() {
     let frame_rate = 60.Hz();
-    let mut color_buffer: [colors::RGB8; 16] = [colors::C_OFF; 16];
+    let mut color_buffer: [RGB8; 16] = [BLACK; 16];
     let ls = LogicalStrip::new(&mut color_buffer);
     let translation_array: [usize; 16] = default_translation_array(16);
     let animation =

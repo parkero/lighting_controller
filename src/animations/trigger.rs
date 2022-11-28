@@ -1,12 +1,13 @@
 use crate::animations::{Direction, MAX_OFFSET};
 use crate::colors;
-use crate::colors::RGB8;
+use crate::colors::ManipulatableColor;
 use crate::utility::{
     convert_ns_to_frames, get_random_offset, shift_offset, FadeRainbow, MarchingRainbow,
     MarchingRainbowMut, Progression, StatefulRainbow, TimedRainbows,
 };
 use arrayvec::ArrayVec;
 use embedded_time::rate::Hertz;
+use rgb::RGB8;
 
 pub type TriggerInit = fn(&mut Trigger, &mut TimedRainbows);
 pub type TriggerUpdater = fn(&mut Trigger, &mut [RGB8]);
