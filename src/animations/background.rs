@@ -70,6 +70,9 @@ fn solid_fade(bg: &mut Background, segment: &mut [RGB8]) {
     for led in segment {
         *led = bg.calculate_fade_color();
     }
+    if bg.frames.get_current() == (bg.frames.total - 1) {
+        bg.rainbow.increment();
+    }
 }
 
 /// Fills the rainbow based on whatever value the offset is currently set to:
