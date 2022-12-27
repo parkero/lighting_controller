@@ -12,16 +12,22 @@
 
 ```rust 
 fn main() {
-	let array = [colors go here];
-	let hc = hardware_controller(get pin references);
+	let ls = LogicalStrip::new(&mut [BLACK; 16]);
+	let hc = hardware_controller(get pin references, framerate, etc.);
 	let lc = lighting_controller(framerate, etc.);
-	lc.add_animation(size, params) //creates default translation array starting at 0
-		.set_translation_array([array_values; size]);
+	let a1 = lc::animations::<LED_COUNT>::new(params) //creates default translation array starting at 0
+		.set_translation_array([array_values; size])
+        .more_builders(with_params);
+    let a2 = lc::animations::<LED_COUNT>::new(params) //creates default translation array starting at 0
+          .set_translation_array([array_values; size])
+          .more_builders(with_params);
 
 	loop {
+        // the hc.update() will be in charge of framerate limiting in addition to any platform specific items needed to be updated regularly
 		if hc.update() {
-			lc.update(&array);
-			hc.write(&array); //use SmartLeds Trait Write Function
+            // This lets you manipulate animations as needed between updates
+			lc.update(&mut ls, &mut [a1, a2]);
+			hc.write(&ls.iter()); //use SmartLeds Trait Write Function
 		}
 	}
 }

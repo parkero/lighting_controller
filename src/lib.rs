@@ -14,12 +14,6 @@ pub struct LogicalStrip<'a> {
     pub color_buffer: &'a mut [RGB8],
 }
 
-pub struct LightingController<'a, const N_ANI: usize> {
-    pub logical_strip: LogicalStrip<'a>,
-    animations: [&'a mut dyn Animatable<'a>; N_ANI],
-    frame_rate: Hertz,
-}
-
 impl<'a> LogicalStrip<'a> {
     pub fn new(color_buffer: &'a mut [RGB8]) -> Self {
         LogicalStrip { color_buffer }
@@ -42,22 +36,25 @@ impl<'a> LogicalStrip<'a> {
     }
 }
 
+pub struct LightingController<'a, const N_ANI: usize> {
+    animations: [&'a mut dyn Animatable<'a>; N_ANI],
+    frame_rate: Hertz,
+}
+
 impl<'a, const N_ANI: usize> LightingController<'a, N_ANI> {
     pub fn new(
-        logical_strip: LogicalStrip<'a>,
         animations: [&'a mut dyn Animatable<'a>; N_ANI],
         frame_rate: impl Into<Hertz>,
     ) -> Self {
         let frame_rate = frame_rate.into();
         let lc = LightingController {
-            logical_strip,
             animations,
             frame_rate,
         };
         lc
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, logical_strip: &mut LogicalStrip) {
         for animation in self.animations.iter_mut() {
             animation.update();
 
@@ -66,7 +63,7 @@ impl<'a, const N_ANI: usize> LightingController<'a, N_ANI> {
             let translated = translater.iter().zip(segment.iter());
 
             for (&index, &color) in translated {
-                self.logical_strip.set_color_at_index(index, color);
+                logical_strip.set_color_at_index(index, color);
             }
         }
     }

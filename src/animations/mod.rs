@@ -2,6 +2,7 @@ pub mod background;
 pub mod foreground;
 pub mod trigger;
 
+use crate::utility::default_translation_array;
 use embedded_time::rate::Hertz;
 use rgb::RGB8;
 
@@ -102,11 +103,8 @@ impl<'a, const N_LED: usize> Animatable<'a> for Animation<'a, N_LED> {
 }
 
 impl<'a, const N_LED: usize> Animation<'a, N_LED> {
-    pub fn new(
-        parameters: AnimationParameters<'a>,
-        translation_array: [usize; N_LED],
-        frame_rate: Hertz,
-    ) -> Self {
+    pub fn new(parameters: AnimationParameters<'a>, frame_rate: Hertz) -> Self {
+        let translation_array = default_translation_array(0);
         let segment = [RGB8::default(); N_LED];
         let fg_state = foreground::Foreground::new(&parameters.fg, frame_rate);
         let bg_state = background::Background::new(&parameters.bg, frame_rate);
