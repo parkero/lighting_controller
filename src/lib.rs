@@ -47,11 +47,11 @@ impl<'a, const N_ANI: usize> LightingController<'a, N_ANI> {
         frame_rate: impl Into<Hertz>,
     ) -> Self {
         let frame_rate = frame_rate.into();
-        let lc = LightingController {
+
+        LightingController {
             animations,
             frame_rate,
-        };
-        lc
+        }
     }
 
     pub fn update(&mut self, logical_strip: &mut LogicalStrip) {
