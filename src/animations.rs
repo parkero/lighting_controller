@@ -1,4 +1,7 @@
-use super::*;
+pub mod background;
+pub mod foreground;
+pub mod trigger;
+
 use crate::utility::default_translation_array;
 use embedded_time::rate::Hertz;
 use rgb::RGB8;
