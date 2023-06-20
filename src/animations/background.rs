@@ -223,8 +223,8 @@ impl<'a> MarchingRainbow for Background<'a> {
     }
 }
 
-impl<'a> MarchingRainbowMut for Background<'a> {
-    fn rainbow_mut(&mut self) -> &'a mut StatefulRainbow {
+impl<'a> MarchingRainbowMut<'a> for Background<'a> {
+    fn rainbow_mut(&mut self) -> &mut StatefulRainbow<'a> {
         &mut self.rainbow
     }
     fn frames_mut(&mut self) -> &mut Progression {

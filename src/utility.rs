@@ -99,8 +99,8 @@ pub trait MarchingRainbow {
     }
 }
 
-pub trait MarchingRainbowMut {
-    fn rainbow_mut(&mut self) -> &mut StatefulRainbow;
+pub trait MarchingRainbowMut<'a> {
+    fn rainbow_mut(&mut self) -> &mut StatefulRainbow<'a>;
     fn frames_mut(&mut self) -> &mut Progression;
 
     /// Advances the rainbow color and resets the frame count
@@ -134,8 +134,8 @@ impl<'a, 'b> MarchingRainbow for TimedRainbows<'a, 'b> {
     }
 }
 
-impl<'a, 'b> MarchingRainbowMut for TimedRainbows<'a, 'b> {
-    fn rainbow_mut(&mut self) -> &'a mut StatefulRainbow {
+impl<'a, 'b> MarchingRainbowMut<'a> for TimedRainbows<'a, 'b> {
+    fn rainbow_mut(&mut self) -> &mut StatefulRainbow<'a> {
         self.incremental_rainbow
     }
     fn frames_mut(&mut self) -> &mut Progression {

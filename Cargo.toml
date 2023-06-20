@@ -9,7 +9,3 @@ embedded-time = "0.12"
 rgb = "0.8"
 smart-leds = "0.3"
 smart-leds-trait = "0.2"
-
-#[[example]]
-#name              = "esp32_ws2812"
-#required-features = ["smartled"]
