@@ -215,7 +215,7 @@ impl<'a> Background<'a> {
 }
 
 impl<'a> MarchingRainbow for Background<'a> {
-    fn rainbow(&self) -> &StatefulRainbow {
+    fn rainbow(&self) -> &StatefulRainbow<'_> {
         &self.rainbow
     }
     fn frames(&self) -> &Progression {
@@ -233,7 +233,7 @@ impl<'a> MarchingRainbowMut<'a> for Background<'a> {
 }
 
 impl<'a> FadeRainbow for Background<'a> {
-    fn rainbow(&self) -> &StatefulRainbow {
+    fn rainbow(&self) -> &StatefulRainbow<'_> {
         &self.rainbow
     }
     fn frames(&self) -> &Progression {

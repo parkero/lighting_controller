@@ -222,7 +222,7 @@ impl Trigger {
 }
 
 impl<'a, const N: usize> MarchingRainbow for TriggerCollection<'a, N> {
-    fn rainbow(&self) -> &StatefulRainbow {
+    fn rainbow(&self) -> &StatefulRainbow<'_> {
         &self.incremental_rainbow
     }
     fn frames(&self) -> &Progression {

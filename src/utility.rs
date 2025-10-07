@@ -71,7 +71,7 @@ impl<'a> Index<usize> for ReversibleRainbow<'a> {
 }
 
 pub trait FadeRainbow {
-    fn rainbow(&self) -> &StatefulRainbow;
+    fn rainbow(&self) -> &StatefulRainbow<'_>;
     fn frames(&self) -> &Progression;
 
     fn calculate_fade_color(&self) -> RGB8 {
@@ -91,7 +91,7 @@ pub trait FadeRainbow {
 }
 
 pub trait MarchingRainbow {
-    fn rainbow(&self) -> &StatefulRainbow;
+    fn rainbow(&self) -> &StatefulRainbow<'_>;
     fn frames(&self) -> &Progression;
 
     fn current_rainbow_color(&self) -> RGB8 {
@@ -117,7 +117,7 @@ pub struct TimedRainbows<'a, 'b> {
 }
 
 impl<'a, 'b> FadeRainbow for TimedRainbows<'a, 'b> {
-    fn rainbow(&self) -> &StatefulRainbow {
+    fn rainbow(&self) -> &StatefulRainbow<'_> {
         self.fade_rainbow
     }
     fn frames(&self) -> &Progression {
@@ -126,7 +126,7 @@ impl<'a, 'b> FadeRainbow for TimedRainbows<'a, 'b> {
 }
 
 impl<'a, 'b> MarchingRainbow for TimedRainbows<'a, 'b> {
-    fn rainbow(&self) -> &StatefulRainbow {
+    fn rainbow(&self) -> &StatefulRainbow<'_> {
         self.incremental_rainbow
     }
     fn frames(&self) -> &Progression {
