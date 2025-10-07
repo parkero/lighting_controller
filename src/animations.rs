@@ -118,4 +118,9 @@ impl<'a, const N_LED: usize> Animation<'a, N_LED> {
             triggers,
         }
     }
+
+    pub fn set_translation_array(mut self, new_array: [usize; N_LED]) -> Self {
+        self.translation_array = new_array;
+        self
+    }
 }
