@@ -56,6 +56,12 @@ pub trait Animatable<'a> {
     fn trigger(&mut self, params: &trigger::Parameters, frame_rate: Hertz);
     fn segment(&self) -> &[RGB8];
     fn translation_array(&self) -> &[usize];
+    // fn update_translation_array(&mut self, new_array: [usize; {const}]);
+    fn update_bg_duration_ns(&mut self, new_time: u64, frame_rate: Hertz);
+    fn update_bg_rainbow(&mut self, new_rainbow: &'a [RGB8], is_forward: bool);
+    fn update_bg_subdivisions(&mut self, new_value: usize);
+    fn update_bg_mode(&mut self, new_mode: background::Mode);
+    fn update_bg_direction(&mut self, new_direction: Direction);
 }
 
 impl<'a, const N_LED: usize> Animatable<'a> for Animation<'a, N_LED> {
@@ -100,6 +106,45 @@ impl<'a, const N_LED: usize> Animatable<'a> for Animation<'a, N_LED> {
     fn translation_array(&self) -> &[usize] {
         &self.translation_array[..]
     }
+    
+    // universal settings functions: apply to all animation types - bg, fg, and triggers:
+
+    // fn update_translation_array(&mut self, new_array: [usize; N_LED]) {
+    //     self.translation_array = new_array;
+    // }
+
+    
+    // bg settings functions - for setting the bg animation parameters:
+    
+    fn update_bg_duration_ns(&mut self, new_time: u64, frame_rate: Hertz) {
+        let frame_count = convert_ns_to_frames(new_time, frame_rate);
+        self.bg_state.frames = Progression::new(frame_count);
+    }
+
+    fn update_bg_rainbow(&mut self, new_rainbow: &'a [RGB8], is_forward: bool) {
+        self.bg_state.rainbow = StatefulRainbow::new(new_rainbow, is_forward);
+    }
+
+
+    fn update_bg_subdivisions(&mut self, new_value: usize) {
+        self.bg_state.subdivisions = new_value;
+    }
+
+    fn update_bg_mode(&mut self, new_mode: background::Mode) {
+        self.bg_state.updater = new_mode.get_updater();
+    }
+
+    fn update_bg_direction(&mut self, new_direction: Direction) {
+        self.bg_state.direction = new_direction;
+    }
+    
+    // fg settings functions - for setting the fg animation parameters:
+
+    // TODO
+
+    // trigger settings functions  - for setting the trigger animation parameters:
+
+    // TODO
 }
 
 impl<'a, const N_LED: usize> Animation<'a, N_LED> {
@@ -126,39 +171,40 @@ impl<'a, const N_LED: usize> Animation<'a, N_LED> {
         self
     }
 
-    // bg settings functions - for updating the bg animation parameters from default values:
+    // bg settings functions - for setting the bg animation parameters:
 
     pub fn set_bg_duration_ns(mut self, new_time: u64, frame_rate: Hertz) -> Self {
-        let frame_count = convert_ns_to_frames(new_time, frame_rate);
-        self.bg_state.frames = Progression::new(frame_count);
+        self.update_bg_duration_ns(new_time, frame_rate);
         self
     }
 
     pub fn set_bg_rainbow(mut self, new_rainbow: &'a [RGB8], is_forward: bool) -> Self {
-        self.bg_state.rainbow = StatefulRainbow::new(new_rainbow, is_forward);
+        self.update_bg_rainbow(new_rainbow, is_forward);
         self
     }
 
 
     pub fn set_bg_subdivisions(mut self, new_value: usize) -> Self {
-        self.bg_state.subdivisions = new_value;
+        self.update_bg_subdivisions(new_value);
         self
     }
 
     pub fn set_bg_mode(mut self, new_mode: background::Mode) -> Self {
-        self.bg_state.updater = new_mode.get_updater();
+        self.update_bg_mode(new_mode);
         self
     }
 
     pub fn set_bg_direction(mut self, new_direction: Direction) -> Self {
-        self.bg_state.direction = new_direction;
+        self.update_bg_direction(new_direction);
         self
     }
 
-    // fg settings functions - for updating the fg animation parameters from default values:
+    // fg settings functions - for setting the fg animation parameters:
 
-    pub fn set_thingy(mut self, new_value: bool) -> Self {
-        self
-    }
+    // TODO
+
+    // trigger settings functions  - for setting the trigger animation parameters:
+
+    // TODO
 
 }
