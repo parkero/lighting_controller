@@ -56,7 +56,7 @@ pub trait Animatable<'a> {
     fn trigger(&mut self, params: &trigger::Parameters, frame_rate: Hertz);
     fn segment(&self) -> &[RGB8];
     fn translation_array(&self) -> &[usize];
-    // fn update_translation_array(&mut self, new_array: [usize; {const}]);
+    fn update_translation_array(&mut self, new_array: &[usize]);
     fn update_bg_duration_ns(&mut self, new_time: u64, frame_rate: Hertz);
     fn update_bg_rainbow(&mut self, new_rainbow: &'a [RGB8], is_forward: bool);
     fn update_bg_subdivisions(&mut self, new_value: usize);
@@ -109,10 +109,13 @@ impl<'a, const N_LED: usize> Animatable<'a> for Animation<'a, N_LED> {
     
     // universal settings functions: apply to all animation types - bg, fg, and triggers:
 
-    // fn update_translation_array(&mut self, new_array: [usize; N_LED]) {
-    //     self.translation_array = new_array;
-    // }
-
+    fn update_translation_array(&mut self, new_array: &[usize]) {
+        let source = new_array.iter().copied();
+        let dest = self.translation_array.iter_mut();
+        for (source, dest) in source.zip(dest) {
+            *dest = source;
+        }
+    }
     
     // bg settings functions - for setting the bg animation parameters:
     
@@ -166,8 +169,8 @@ impl<'a, const N_LED: usize> Animation<'a, N_LED> {
     
     // universal settings functions: apply to all animation types - bg, fg, and triggers:
 
-    pub fn set_translation_array(mut self, new_array: [usize; N_LED]) -> Self {
-        self.translation_array = new_array;
+    pub fn set_translation_array(mut self, new_array: &[usize; N_LED]) -> Self {
+        self.update_translation_array(new_array);
         self
     }
 
