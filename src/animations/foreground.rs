@@ -46,7 +46,7 @@ pub enum Mode {
 }
 
 impl Mode {
-    fn get_updater(&self) -> Option<FgUpdater> {
+    pub fn get_updater(&self) -> Option<FgUpdater> {
         match *self {
             Mode::NoForeground => None,
             Mode::MarqueeSolid => Some(marquee_solid),
@@ -131,10 +131,10 @@ pub struct Foreground<'a> {
 
     // parameters
     pub rainbow: StatefulRainbow<'a>,
-    direction: Direction,
-    subdivisions: usize,
-    pixels_per_pixel_group: usize,
-    updater: Option<FgUpdater>,
+    pub direction: Direction,
+    pub subdivisions: usize,
+    pub pixels_per_pixel_group: usize,
+    pub updater: Option<FgUpdater>,
 }
 
 impl<'a> Foreground<'a> {
