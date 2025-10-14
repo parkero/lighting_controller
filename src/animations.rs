@@ -2,7 +2,7 @@ pub mod background;
 pub mod foreground;
 pub mod trigger;
 
-use crate::utility::default_translation_array;
+use crate::utility::{convert_ns_to_frames, default_translation_array, Progression, StatefulRainbow};
 use embedded_time::rate::Hertz;
 use rgb::RGB8;
 
@@ -118,9 +118,47 @@ impl<'a, const N_LED: usize> Animation<'a, N_LED> {
             triggers,
         }
     }
+    
+    // universal settings functions: apply to all animation types - bg, fg, and triggers:
 
     pub fn set_translation_array(mut self, new_array: [usize; N_LED]) -> Self {
         self.translation_array = new_array;
         self
     }
+
+    // bg settings functions - for updating the bg animation parameters from default values:
+
+    pub fn set_bg_duration_ns(mut self, new_time: u64, frame_rate: Hertz) -> Self {
+        let frame_count = convert_ns_to_frames(new_time, frame_rate);
+        self.bg_state.frames = Progression::new(frame_count);
+        self
+    }
+
+    pub fn set_bg_rainbow(mut self, new_rainbow: &'a [RGB8], is_forward: bool) -> Self {
+        self.bg_state.rainbow = StatefulRainbow::new(new_rainbow, is_forward);
+        self
+    }
+
+
+    pub fn set_bg_subdivisions(mut self, new_value: usize) -> Self {
+        self.bg_state.subdivisions = new_value;
+        self
+    }
+
+    pub fn set_bg_mode(mut self, new_mode: background::Mode) -> Self {
+        self.bg_state.updater = new_mode.get_updater();
+        self
+    }
+
+    pub fn set_bg_direction(mut self, new_direction: Direction) -> Self {
+        self.bg_state.direction = new_direction;
+        self
+    }
+
+    // fg settings functions - for updating the fg animation parameters from default values:
+
+    pub fn set_thingy(mut self, new_value: bool) -> Self {
+        self
+    }
+
 }

@@ -41,7 +41,7 @@ pub enum Mode {
 }
 
 impl Mode {
-    fn get_updater(&self) -> Option<BgUpdater> {
+    pub fn get_updater(&self) -> Option<BgUpdater> {
         match *self {
             Mode::NoBackground => Some(no_background),
             Mode::Solid => Some(solid),
@@ -127,9 +127,9 @@ pub struct Background<'a> {
 
     // parameters
     pub rainbow: StatefulRainbow<'a>,
-    direction: Direction,
-    subdivisions: usize,
-    updater: Option<BgUpdater>,
+    pub direction: Direction,
+    pub subdivisions: usize,
+    pub updater: Option<BgUpdater>,
 }
 
 impl<'a> Background<'a> {

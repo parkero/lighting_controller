@@ -37,8 +37,8 @@ impl<'a> LogicalStrip<'a> {
 }
 
 pub struct LightingController<'a, const N_ANI: usize> {
-    animations: [&'a mut dyn Animatable<'a>; N_ANI],
-    frame_rate: Hertz,
+    pub animations: [&'a mut dyn Animatable<'a>; N_ANI],
+    pub frame_rate: Hertz,
 }
 
 impl<'a, const N_ANI: usize> LightingController<'a, N_ANI> {
