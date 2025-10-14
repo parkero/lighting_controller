@@ -1,6 +1,6 @@
 use crate::colors::ManipulatableColor;
 use crate::{
-    animations::{Direction, MAX_OFFSET},
+    animations::{Direction, MAX_OFFSET, RainbowDir},
     colors::Rainbow,
 };
 use core::ops::Index;
@@ -46,7 +46,7 @@ pub fn shift_offset(starting_offset: u16, frames: Progression, direction: Direct
 
 pub struct ReversibleRainbow<'a> {
     backer: Rainbow<'a>,
-    is_forward: bool,
+    rainbow_dir: RainbowDir,
 }
 
 impl<'a> ReversibleRainbow<'a> {
@@ -63,9 +63,9 @@ impl<'a> Index<usize> for ReversibleRainbow<'a> {
     type Output = RGB8;
 
     fn index(&self, index: usize) -> &Self::Output {
-        match self.is_forward {
-            true => &self.backer[index],
-            false => &self.backer[self.backer.len() - 1 - index],
+        match self.rainbow_dir {
+            RainbowDir::Forward => &self.backer[index],
+            RainbowDir::Backward => &self.backer[self.backer.len() - 1 - index],
         }
     }
 }
@@ -149,11 +149,11 @@ pub struct StatefulRainbow<'a> {
 }
 
 impl<'a> StatefulRainbow<'a> {
-    pub fn new(rainbow: &'a [RGB8], is_forward: bool) -> StatefulRainbow<'a> {
+    pub fn new(rainbow: &'a [RGB8], rainbow_dir: RainbowDir) -> StatefulRainbow<'a> {
         let position = Progression::new(rainbow.len());
         let backer = ReversibleRainbow {
             backer: rainbow,
-            is_forward,
+            rainbow_dir,
         };
         Self { backer, position }
     }

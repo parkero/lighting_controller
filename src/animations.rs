@@ -21,6 +21,13 @@ pub enum Direction {
     Negative,
 }
 
+/// Denotes the direction rainbow colors are used, effects vary depending on animation modes:
+#[derive(Copy, Clone)]
+pub enum RainbowDir {
+    Forward,
+    Backward,
+}
+
 /// Denotes the main types of animations, e.g. Foreground, Background, or Trigger:
 #[derive(Clone, Copy)]
 pub enum AnimationType {
@@ -62,14 +69,14 @@ pub trait Animatable<'a> {
     fn update_bg_direction(&mut self, new_direction: Direction);
     fn update_bg_duration_ns(&mut self, new_time: u64, frame_rate: Hertz);
     fn update_bg_mode(&mut self, new_mode: background::Mode);
-    fn update_bg_rainbow(&mut self, new_rainbow: &'a [RGB8], is_forward: bool);
+    fn update_bg_rainbow(&mut self, new_rainbow: &'a [RGB8], rainbow_dir: RainbowDir);
     fn update_bg_subdivisions(&mut self, new_value: usize);
     
     fn update_fg_direction(&mut self, new_direction: Direction);
     fn update_fg_duration_ns(&mut self, new_time: u64, frame_rate: Hertz);
     fn update_fg_mode(&mut self, new_mode: foreground::Mode);
     fn update_fg_pixels_per_pixel_group(&mut self, new_value: usize);
-    fn update_fg_rainbow(&mut self, new_rainbow: &'a [RGB8], is_forward: bool);
+    fn update_fg_rainbow(&mut self, new_rainbow: &'a [RGB8], rainbow_dir: RainbowDir);
     fn update_fg_step_time_ns(&mut self, new_time: u64, frame_rate: Hertz);
     fn update_fg_subdivisions(&mut self, new_value: usize);
 }
@@ -142,8 +149,8 @@ impl<'a, const N_LED: usize> Animatable<'a> for Animation<'a, N_LED> {
             self.bg_state.updater = new_mode.get_updater();
     }
 
-    fn update_bg_rainbow(&mut self, new_rainbow: &'a [RGB8], is_forward: bool) {
-        self.bg_state.rainbow = StatefulRainbow::new(new_rainbow, is_forward);
+    fn update_bg_rainbow(&mut self, new_rainbow: &'a [RGB8], rainbow_dir: RainbowDir) {
+        self.bg_state.rainbow = StatefulRainbow::new(new_rainbow, rainbow_dir);
     }
 
     fn update_bg_subdivisions(&mut self, new_value: usize) {
@@ -169,8 +176,8 @@ impl<'a, const N_LED: usize> Animatable<'a> for Animation<'a, N_LED> {
         self.fg_state.pixels_per_pixel_group = new_value;
     }
 
-    fn update_fg_rainbow(&mut self, new_rainbow: &'a [RGB8], is_forward: bool) {
-        self.fg_state.rainbow = StatefulRainbow::new(new_rainbow, is_forward);
+    fn update_fg_rainbow(&mut self, new_rainbow: &'a [RGB8], rainbow_dir: RainbowDir) {
+        self.fg_state.rainbow = StatefulRainbow::new(new_rainbow, rainbow_dir);
     }
     
     fn update_fg_step_time_ns(&mut self, new_time: u64, frame_rate: Hertz) {
@@ -182,10 +189,6 @@ impl<'a, const N_LED: usize> Animatable<'a> for Animation<'a, N_LED> {
         self.fg_state.subdivisions = new_value;
         
     }
-
-    // trigger settings functions  - for setting the trigger animation parameters:
-
-    // TODO
 }
 
 impl<'a, const N_LED: usize> Animation<'a, N_LED> {
@@ -229,8 +232,8 @@ impl<'a, const N_LED: usize> Animation<'a, N_LED> {
         self
     }
 
-    pub fn set_bg_rainbow(mut self, new_rainbow: &'a [RGB8], is_forward: bool) -> Self {
-        self.update_bg_rainbow(new_rainbow, is_forward);
+    pub fn set_bg_rainbow(mut self, new_rainbow: &'a [RGB8], rainbow_dir: RainbowDir) -> Self {
+        self.update_bg_rainbow(new_rainbow, rainbow_dir);
         self
     }
 
@@ -256,8 +259,8 @@ impl<'a, const N_LED: usize> Animation<'a, N_LED> {
         self
     }
 
-    pub fn set_fg_rainbow(mut self, new_rainbow: &'a [RGB8], is_forward: bool) -> Self{
-        self.update_fg_rainbow(new_rainbow, is_forward);
+    pub fn set_fg_rainbow(mut self, new_rainbow: &'a [RGB8], rainbow_dir: RainbowDir) -> Self{
+        self.update_fg_rainbow(new_rainbow, rainbow_dir);
         self
     }
 

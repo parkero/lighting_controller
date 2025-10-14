@@ -1,4 +1,4 @@
-use crate::animations::{Direction, MAX_OFFSET};
+use crate::animations::{Direction, MAX_OFFSET, RainbowDir};
 use crate::colors;
 use crate::colors::ManipulatableColor;
 use crate::utility::{
@@ -102,7 +102,7 @@ impl Mode {
 /// All triggers share a single rainbow / fade speed, which is configured in this struct
 pub struct GlobalParameters<'a> {
     pub rainbow: colors::Rainbow<'a>,
-    pub is_rainbow_forward: bool,
+    pub rainbow_dir: RainbowDir,
     pub duration_ns: u64,
 }
 
@@ -117,8 +117,8 @@ pub struct TriggerCollection<'a, const N: usize> {
 
 impl<'a, const N: usize> TriggerCollection<'a, N> {
     pub fn new(init: &GlobalParameters<'a>, frame_rate: Hertz) -> Self {
-        let fade_rainbow = StatefulRainbow::new(init.rainbow, init.is_rainbow_forward);
-        let incremental_rainbow = StatefulRainbow::new(init.rainbow, init.is_rainbow_forward);
+        let fade_rainbow = StatefulRainbow::new(init.rainbow, init.rainbow_dir);
+        let incremental_rainbow = StatefulRainbow::new(init.rainbow, init.rainbow_dir);
         let frames = Progression::new(convert_ns_to_frames(init.duration_ns, frame_rate));
         let triggers = ArrayVec::new();
 

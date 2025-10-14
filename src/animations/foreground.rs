@@ -1,5 +1,5 @@
 use crate::{
-    animations::{Direction, MAX_OFFSET},
+    animations::{Direction, MAX_OFFSET, RainbowDir},
     colors::Rainbow,
     utility::{
         convert_ns_to_frames, FadeRainbow, MarchingRainbow, MarchingRainbowMut, Progression,
@@ -113,7 +113,7 @@ pub struct Parameters<'a> {
     pub mode: Mode,
     pub rainbow: Rainbow<'a>,
     pub direction: Direction,
-    pub is_rainbow_forward: bool,
+    pub rainbow_dir: RainbowDir,
     pub duration_ns: u64,
     pub step_time_ns: u64,
     pub subdivisions: usize,
@@ -148,7 +148,7 @@ impl<'a> Foreground<'a> {
             step_frames: Progression::new(step_frame_count),
             marquee_position_toggle: false,
             has_been_triggered: false,
-            rainbow: StatefulRainbow::new(init.rainbow, init.is_rainbow_forward),
+            rainbow: StatefulRainbow::new(init.rainbow, init.rainbow_dir),
             direction: init.direction,
             subdivisions: init.subdivisions,
             pixels_per_pixel_group: init.pixels_per_pixel_group,

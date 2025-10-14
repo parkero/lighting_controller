@@ -1,4 +1,4 @@
-use crate::animations::{Direction, MAX_OFFSET};
+use crate::animations::{Direction, MAX_OFFSET, RainbowDir};
 use crate::colors::{color_lerp, Rainbow};
 use crate::utility::{
     self, convert_ns_to_frames, get_random_offset, FadeRainbow, MarchingRainbow,
@@ -114,7 +114,7 @@ pub struct Parameters<'a> {
     pub mode: Mode,
     pub rainbow: Rainbow<'a>,
     pub direction: Direction,
-    pub is_rainbow_forward: bool,
+    pub rainbow_dir: RainbowDir,
     pub duration_ns: u64,
     pub subdivisions: usize,
 }
@@ -140,7 +140,7 @@ impl<'a> Background<'a> {
             offset: 0,
             frames: Progression::new(frame_count),
             has_been_triggered: false,
-            rainbow: StatefulRainbow::new(init.rainbow, init.is_rainbow_forward),
+            rainbow: StatefulRainbow::new(init.rainbow, init.rainbow_dir),
             direction: init.direction,
             subdivisions: init.subdivisions,
             updater: init.mode.get_updater(),

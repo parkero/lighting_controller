@@ -20,7 +20,7 @@ pub const BG_OFF: background::Parameters = background::Parameters {
     mode: background::Mode::NoBackground,
     rainbow: c::R_BLACK,
     direction: Direction::Stopped,
-    is_rainbow_forward: true,
+    rainbow_dir: RainbowDir::Forward,
     duration_ns: 0,
     subdivisions: DEFAULT_NUMBER_OF_SUBDIVISIONS,
 };
@@ -30,7 +30,7 @@ pub const FG_OFF: foreground::Parameters = foreground::Parameters {
     mode: foreground::Mode::NoForeground,
     rainbow: c::R_BLACK,
     direction: Direction::Stopped,
-    is_rainbow_forward: true,
+    rainbow_dir: RainbowDir::Forward,
     duration_ns: 0,
     step_time_ns: 0,
     subdivisions: DEFAULT_NUMBER_OF_SUBDIVISIONS,
@@ -40,7 +40,7 @@ pub const FG_OFF: foreground::Parameters = foreground::Parameters {
 /// This global trigger parameter struct can be used to turn off all trigger effects.
 pub const TRIGGER_OFF: trigger::GlobalParameters = trigger::GlobalParameters {
     rainbow: c::R_BLACK,
-    is_rainbow_forward: true,
+    rainbow_dir: RainbowDir::Forward,
     duration_ns: 0,
 };
 
@@ -56,7 +56,7 @@ pub const BG_DEFAULT: background::Parameters = background::Parameters {
     mode: background::Mode::FillRainbowRotate,
     rainbow: c::R_ROYGBIV,
     direction: Direction::Positive,
-    is_rainbow_forward: true,
+    rainbow_dir: RainbowDir::Forward,
     duration_ns: 15_000_000_000,
     subdivisions: 0,
 };
@@ -66,7 +66,7 @@ pub const FG_DEFAULT: foreground::Parameters = foreground::Parameters {
     mode: foreground::Mode::NoForeground,
     rainbow: c::R_ROYGBIV,
     direction: Direction::Positive,
-    is_rainbow_forward: true,
+    rainbow_dir: RainbowDir::Forward,
     duration_ns: 10_000_000_000,
     step_time_ns: 1_000_000_000,
     subdivisions: DEFAULT_NUMBER_OF_SUBDIVISIONS,
@@ -76,7 +76,7 @@ pub const FG_DEFAULT: foreground::Parameters = foreground::Parameters {
 /// This is an animation trigger struct used for the default values unless modified
 pub const TRIGGER_DEFAULT: trigger::GlobalParameters = trigger::GlobalParameters {
     rainbow: c::R_ROYGBIV,
-    is_rainbow_forward: true,
+    rainbow_dir: RainbowDir::Forward,
     duration_ns: 10_000_000_000,
 };
 
