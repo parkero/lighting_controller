@@ -51,8 +51,8 @@ pub const ANI_ALL_OFF: AnimationParameters = AnimationParameters {
     trigger: TRIGGER_OFF,
 };
 
-/// This is an animation background struct used for testing
-pub const BG_TEST: background::Parameters = background::Parameters {
+/// This is an animation background struct used for the default values unless modified
+pub const BG_DEFAULT: background::Parameters = background::Parameters {
     mode: background::Mode::FillRainbowRotate,
     rainbow: c::R_ROYGBIV,
     direction: Direction::Positive,
@@ -61,8 +61,8 @@ pub const BG_TEST: background::Parameters = background::Parameters {
     subdivisions: 0,
 };
 
-/// This is an animation foreground struct used for testing
-pub const FG_TEST: foreground::Parameters = foreground::Parameters {
+/// This is an animation foreground struct used for the default values unless modified
+pub const FG_DEFAULT: foreground::Parameters = foreground::Parameters {
     mode: foreground::Mode::NoForeground,
     rainbow: c::R_ROYGBIV,
     direction: Direction::Positive,
@@ -73,16 +73,16 @@ pub const FG_TEST: foreground::Parameters = foreground::Parameters {
     pixels_per_pixel_group: 1,
 };
 
-/// This is an animation trigger struct used for testing
-pub const TRIGGER_TEST: trigger::GlobalParameters = trigger::GlobalParameters {
+/// This is an animation trigger struct used for the default values unless modified
+pub const TRIGGER_DEFAULT: trigger::GlobalParameters = trigger::GlobalParameters {
     rainbow: c::R_ROYGBIV,
     is_rainbow_forward: true,
     duration_ns: 10_000_000_000,
 };
 
-/// This animation parameter struct will turn off ALL animations: fg, bg, and trigger.
-pub const ANI_TEST: AnimationParameters = AnimationParameters {
-    bg: BG_TEST,
-    fg: FG_TEST,
-    trigger: TRIGGER_TEST,
+/// This animation parameter struct is using the default values for ALL animations: fg, bg, and trigger.
+pub const ANI_DEFAULT: AnimationParameters = AnimationParameters {
+    bg: BG_DEFAULT,
+    fg: FG_DEFAULT,
+    trigger: TRIGGER_DEFAULT,
 };
