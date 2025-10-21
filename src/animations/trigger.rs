@@ -286,7 +286,7 @@ fn color_shot(trigger: &mut Trigger, segment: &mut [RGB8]) {
 
 fn init_color_pulse(trigger: &mut Trigger, _: &mut TimedRainbows) {
     trigger.direction = Direction::Stopped;
-    trigger.offset = get_random_offset();
+    // trigger.offset = get_random_offset(); //TODO: Make this work properly
 }
 
 fn init_color_pulse_fade(trigger: &mut Trigger, global: &mut TimedRainbows) {
