@@ -3,10 +3,12 @@
 
 ### Major Goals, in nothing resembling order, for now.
 - [ ] Support for RGB, RGBA, RGBW, and RGBWA led types. This should be compatible with the rgb crate's rgb color types.
-- [ ] API update - lighting controller should use functions and builder paradigm to add animations. Animations should not need to be created separately outside the lighting controller.
-  - Unsure if this should include the animation parameter structs as builder functions or not.
-- [ ] Currently, the lighting controller takes ownership of an array of RGB8 values. refactor so it only operates on a reference to an array instead. The array should be passed into functions like lc.update(&array)
+- [x] API update - lighting controller should use functions and builder paradigm to add animations.
+	- [ ] Animations should not need to be created separately outside the lighting controller.
+  	- Unsure if this should include the animation parameter structs as builder functions or not.
+- [x] Currently, the lighting controller takes ownership of an array of RGB8 values. refactor so it only operates on a reference to an array instead. The array should be passed into functions like lc.update(&array)
 - [x] Lighting controller should be entirely platform-agnostic. All functions that use things like system clocks or sending color data to hardware pins should be relegated to a hardware controller instead.
+- [ ] Add a random number generator that is not hardware dependent that can be used instead of a fixed offset for triggers. See triggers.rs:289
 
 ### (extremely rough) example of how it could look when done:
 
