@@ -79,6 +79,10 @@ pub trait Animatable<'a> {
     fn update_fg_rainbow(&mut self, new_rainbow: &'a [RGB8], rainbow_dir: RainbowDir);
     fn update_fg_step_time_ns(&mut self, new_time: u64, frame_rate: Hertz);
     fn update_fg_subdivisions(&mut self, new_value: usize);
+
+    fn update_trig_duration_ns(&mut self, new_time: u64, frame_rate: Hertz);
+    fn update_trig_fade_rainbow(&mut self, new_rainbow: &'a [RGB8], rainbow_dir: RainbowDir);
+    fn update_trig_incremental_rainbow(&mut self, new_rainbow: &'a [RGB8], rainbow_dir: RainbowDir);
 }
 
 impl<'a, const N_LED: usize> Animatable<'a> for Animation<'a, N_LED> {
@@ -189,6 +193,22 @@ impl<'a, const N_LED: usize> Animatable<'a> for Animation<'a, N_LED> {
         self.fg_state.subdivisions = new_value;
         
     }
+
+    // trigger settings functions - for setting the trigger animation parameters:
+
+    fn update_trig_duration_ns(&mut self, new_time: u64, frame_rate: Hertz){
+        let frame_count = convert_ns_to_frames(new_time, frame_rate);
+        self.triggers.frames = Progression::new(frame_count);
+    }
+
+    fn update_trig_fade_rainbow(&mut self, new_rainbow: &'a [RGB8], rainbow_dir: RainbowDir){
+        self.triggers.fade_rainbow = StatefulRainbow::new(new_rainbow, rainbow_dir);
+    }
+
+    fn update_trig_incremental_rainbow(&mut self, new_rainbow: &'a [RGB8], rainbow_dir: RainbowDir){
+        self.triggers.incremental_rainbow = StatefulRainbow::new(new_rainbow, rainbow_dir);
+    }
+
 }
 
 impl<'a, const N_LED: usize> Animation<'a, N_LED> {
@@ -281,6 +301,19 @@ impl<'a, const N_LED: usize> Animation<'a, N_LED> {
 
     // trigger settings functions  - for setting the trigger animation parameters:
 
-    // TODO
+    pub fn set_trig_duration_ns(mut self, new_time: u64, frame_rate: Hertz) -> Self{
+        self.update_trig_duration_ns(new_time, frame_rate);
+        self
+    }
+
+    pub fn set_trig_fade_rainbow(mut self, new_rainbow: &'a [RGB8], rainbow_dir: RainbowDir) -> Self{
+        self.update_trig_fade_rainbow(new_rainbow, rainbow_dir);
+        self
+    }
+
+    pub fn set_trig_incremental_rainbow(mut self, new_rainbow: &'a [RGB8], rainbow_dir: RainbowDir) -> Self{
+        self.update_trig_incremental_rainbow(new_rainbow, rainbow_dir);
+        self
+    }
 
 }

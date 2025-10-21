@@ -1,4 +1,4 @@
-use crate::animations::{Direction, MAX_OFFSET, RainbowDir};
+use crate::animations::{Direction, RainbowDir, MAX_OFFSET};
 use crate::colors;
 use crate::colors::ManipulatableColor;
 use crate::utility::{
