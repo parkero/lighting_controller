@@ -1,11 +1,14 @@
 use crate::colors::ManipulatableColor;
 use crate::{
-    animations::{Direction, MAX_OFFSET, RainbowDir},
+    animations::{Direction, RainbowDir, MAX_OFFSET},
     colors::Rainbow,
 };
 use core::ops::Index;
 use embedded_time::rate::*;
+use fastrand::Rng;
 use rgb::RGB8;
+
+static mut RNG_CELL: Option<Rng> = None;
 
 pub fn convert_ns_to_frames(nanos: u64, frame_rate: Hertz) -> usize {
     (nanos * frame_rate.integer() as u64 / 1_000_000_000_u64) as usize
@@ -25,9 +28,23 @@ pub fn default_translation_array<const SIZE: usize>(start_at: usize) -> [usize; 
     result
 }
 
-/// TODO: Implement an actual random function that's not hardware dependent here
+pub fn set_random_seed(seed: u64) {
+    unsafe {
+        RNG_CELL = Some(Rng::with_seed(seed));
+    }
+}
+
 pub fn get_random_offset() -> u16 {
-    12
+    unsafe {
+        if RNG_CELL == None {
+            set_random_seed(42);
+        }
+        // This abomination brought to you by: https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html#safe-references
+        match &mut *&raw mut RNG_CELL {
+            Some(rng) => rng.u16(..),
+            _ => 42,
+        }
+    }
 }
 
 pub fn shift_offset(starting_offset: u16, frames: Progression, direction: Direction) -> u16 {
